@@ -3,6 +3,7 @@ from torch import nn
 
 from ..base.encoder import Encoder as BaseEncoder
 from .init_seq_2_seq import init_seq2seq
+from .gru import GRU
 
 
 class Encoder(BaseEncoder):
@@ -16,14 +17,14 @@ class Encoder(BaseEncoder):
                  dropout: float = 0.0) -> None:
         super().__init__()
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
-        self.rnn = nn.GRU(embedding_dim, num_hiddens, num_layers, dropout)
+        self.rnn = GRU(embedding_dim, num_hiddens, num_layers, dropout)
         self.apply(init_seq2seq)
 
     def forward(self, X: torch.Tensor, *args):
         # X shape: (batch_size, num_steps)
+        emb = self.embedding(X.t().type(torch.int64))
         # Embedding shape: (num_steps, batch_size, embedding_dim)
-        emb = self.embedding(X.to().type(torch.int64))
+        output, states = self.rnn(emb)
         # Output shape: (num_steps, batch_size, num_hiddens)
         # States shape: (num_layers, batch_sie, num_hiddens)
-        output, states = self.rnn(emb)
         return output, states

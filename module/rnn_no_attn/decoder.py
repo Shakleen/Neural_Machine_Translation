@@ -3,6 +3,7 @@ from torch import nn
 
 from ..base.decoder import Decoder as BaseDecoder
 from .init_seq_2_seq import init_seq2seq
+from .gru import GRU
 
 
 class Decoder(BaseDecoder):
@@ -16,7 +17,7 @@ class Decoder(BaseDecoder):
                  dropout: float = 0.0):
         super().__init__()
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
-        self.rnn = nn.GRU(embedding_dim+num_hiddens,
+        self.rnn = GRU(embedding_dim+num_hiddens,
                           num_hiddens, num_layers, dropout)
         self.dense = nn.LazyLinear(vocab_size)
         self.apply(init_seq2seq)
@@ -26,8 +27,8 @@ class Decoder(BaseDecoder):
 
     def forward(self, X, state):
         # X shape: (batch_size, num_steps)
+        embs = self.embedding(X.t().type(torch.int64))
         # Embedding Shape: (num_steps, batch_size, embedding_dim)
-        embs = self.embedding(X.to().type(torch.int64))
         enc_output, hidden_state = state
         # Context shape: (batch_size, num_hiddens)
         context = enc_output[-1]

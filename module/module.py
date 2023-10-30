@@ -1,7 +1,7 @@
 from torch import nn
 
-from ..utils.progress_board import ProgressBoard
-from ..utils.hyperparameters import HyperParameters
+from utils.progress_board import ProgressBoard
+from utils.hyperparameters import HyperParameters
 
 
 class Module(nn.Module, HyperParameters):  # @save
