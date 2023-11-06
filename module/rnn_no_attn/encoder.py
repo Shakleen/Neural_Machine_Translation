@@ -2,7 +2,7 @@ import torch
 from torch import nn
 
 from ..base.encoder import Encoder as BaseEncoder
-from .init_seq_2_seq import init_seq2seq
+from ..base.init_seq_2_seq import init_seq2seq
 from .gru import GRU
 
 

@@ -1,7 +1,7 @@
 import torch
 from torch.optim import Adam
 
-from ..base.encoder_decoder import EncoderDecoder
+from .encoder_decoder import EncoderDecoder
 
 
 class Seq2Seq(EncoderDecoder):
